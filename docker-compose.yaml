@@ -1,5 +1,6 @@
 services:
   aisens:
+    # Use aisens:latest for CPU or aisens:gpu for GPU acceleration
     image: aisens:latest
     container_name: aisens
     volumes:
@@ -9,6 +10,15 @@ services:
     environment:
       - 'OLLAMA_BASE_URL=http://localhost:11434'
       - 'WEBUI_SECRET_KEY='
+    # Uncomment the following for GPU support (requires nvidia-docker runtime)
+    # runtime: nvidia
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: all
+    #           capabilities: [gpu]
     extra_hosts:
       - host.docker.internal:host-gateway
     restart: unless-stopped
