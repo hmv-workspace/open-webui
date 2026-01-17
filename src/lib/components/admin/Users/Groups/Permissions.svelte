@@ -5,62 +5,7 @@
 	import Switch from '$lib/components/common/Switch.svelte';
 	import Tooltip from '$lib/components/common/Tooltip.svelte';
 
-	// Default values for permissions
-	const DEFAULT_PERMISSIONS = {
-		workspace: {
-			models: false,
-			knowledge: false,
-			prompts: false,
-			tools: false,
-			models_import: false,
-			models_export: false,
-			prompts_import: false,
-			prompts_export: false,
-			tools_import: false,
-			tools_export: false
-		},
-		sharing: {
-			models: false,
-			public_models: false,
-			knowledge: false,
-			public_knowledge: false,
-			prompts: false,
-			public_prompts: false,
-			tools: false,
-			public_tools: false,
-			notes: false,
-			public_notes: false
-		},
-		chat: {
-			controls: true,
-			valves: true,
-			system_prompt: true,
-			params: true,
-			file_upload: true,
-			delete: true,
-			delete_message: true,
-			continue_response: true,
-			regenerate_response: true,
-			rate_response: true,
-			edit: true,
-			share: true,
-			export: true,
-			stt: true,
-			tts: true,
-			call: true,
-			multiple_models: true,
-			temporary: true,
-			temporary_enforced: false
-		},
-		features: {
-			api_keys: false,
-			direct_tool_servers: false,
-			web_search: true,
-			image_generation: true,
-			code_interpreter: true,
-			notes: true
-		}
-	};
+	import { DEFAULT_PERMISSIONS } from '$lib/constants/permissions';
 
 	export let permissions = {};
 	export let defaultPermissions = {};
@@ -77,7 +22,8 @@
 			workspace: { ...defaults.workspace, ...obj.workspace },
 			sharing: { ...defaults.sharing, ...obj.sharing },
 			chat: { ...defaults.chat, ...obj.chat },
-			features: { ...defaults.features, ...obj.features }
+			features: { ...defaults.features, ...obj.features },
+			settings: { ...defaults.settings, ...obj.settings }
 		};
 	}
 
@@ -214,7 +160,7 @@
 		</div>
 	</div>
 
-	<hr class=" border-gray-100 dark:border-gray-850" />
+	<hr class=" border-gray-100/30 dark:border-gray-850/30" />
 
 	<div>
 		<div class=" mb-2 text-sm font-medium">{$i18n.t('Sharing Permissions')}</div>
@@ -390,7 +336,7 @@
 		{/if}
 	</div>
 
-	<hr class=" border-gray-100 dark:border-gray-850" />
+	<hr class=" border-gray-100/30 dark:border-gray-850/30" />
 
 	<div>
 		<div class=" mb-2 text-sm font-medium">{$i18n.t('Chat Permissions')}</div>
@@ -704,7 +650,7 @@
 		{/if}
 	</div>
 
-	<hr class=" border-gray-100 dark:border-gray-850" />
+	<hr class=" border-gray-100/30 dark:border-gray-850/30" />
 
 	<div>
 		<div class=" mb-2 text-sm font-medium">{$i18n.t('Features Permissions')}</div>
@@ -717,6 +663,54 @@
 				<Switch bind:state={permissions.features.api_keys} />
 			</div>
 			{#if defaultPermissions?.features?.api_keys && !permissions.features.api_keys}
+				<div>
+					<div class="text-xs text-gray-500">
+						{$i18n.t('This is a default user permission and will remain enabled.')}
+					</div>
+				</div>
+			{/if}
+		</div>
+
+		<div class="flex flex-col w-full">
+			<div class="flex w-full justify-between my-1">
+				<div class=" self-center text-xs font-medium">
+					{$i18n.t('Notes')}
+				</div>
+				<Switch bind:state={permissions.features.notes} />
+			</div>
+			{#if defaultPermissions?.features?.notes && !permissions.features.notes}
+				<div>
+					<div class="text-xs text-gray-500">
+						{$i18n.t('This is a default user permission and will remain enabled.')}
+					</div>
+				</div>
+			{/if}
+		</div>
+
+		<div class="flex flex-col w-full">
+			<div class="flex w-full justify-between my-1">
+				<div class=" self-center text-xs font-medium">
+					{$i18n.t('Channels')}
+				</div>
+				<Switch bind:state={permissions.features.channels} />
+			</div>
+			{#if defaultPermissions?.features?.channels && !permissions.features.channels}
+				<div>
+					<div class="text-xs text-gray-500">
+						{$i18n.t('This is a default user permission and will remain enabled.')}
+					</div>
+				</div>
+			{/if}
+		</div>
+
+		<div class="flex flex-col w-full">
+			<div class="flex w-full justify-between my-1">
+				<div class=" self-center text-xs font-medium">
+					{$i18n.t('Folders')}
+				</div>
+				<Switch bind:state={permissions.features.folders} />
+			</div>
+			{#if defaultPermissions?.features?.folders && !permissions.features.folders}
 				<div>
 					<div class="text-xs text-gray-500">
 						{$i18n.t('This is a default user permission and will remain enabled.')}
@@ -792,11 +786,33 @@
 		<div class="flex flex-col w-full">
 			<div class="flex w-full justify-between my-1">
 				<div class=" self-center text-xs font-medium">
-					{$i18n.t('Notes')}
+					{$i18n.t('Memories')}
 				</div>
-				<Switch bind:state={permissions.features.notes} />
+				<Switch bind:state={permissions.features.memories} />
 			</div>
-			{#if defaultPermissions?.features?.notes && !permissions.features.notes}
+			{#if defaultPermissions?.features?.memories && !permissions.features.memories}
+				<div>
+					<div class="text-xs text-gray-500">
+						{$i18n.t('This is a default user permission and will remain enabled.')}
+					</div>
+				</div>
+			{/if}
+		</div>
+	</div>
+
+	<hr class=" border-gray-100/30 dark:border-gray-850/30" />
+
+	<div>
+		<div class=" mb-2 text-sm font-medium">{$i18n.t('Settings Permissions')}</div>
+
+		<div class="flex flex-col w-full">
+			<div class="flex w-full justify-between my-1">
+				<div class=" self-center text-xs font-medium">
+					{$i18n.t('Interface Settings Access')}
+				</div>
+				<Switch bind:state={permissions.settings.interface} />
+			</div>
+			{#if defaultPermissions?.settings?.interface && !permissions.settings.interface}
 				<div>
 					<div class="text-xs text-gray-500">
 						{$i18n.t('This is a default user permission and will remain enabled.')}

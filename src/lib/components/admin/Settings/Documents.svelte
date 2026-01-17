@@ -327,7 +327,7 @@
 				<div class="mb-3">
 					<div class=" mt-0.5 mb-2.5 text-base font-medium">{$i18n.t('General')}</div>
 
-					<hr class=" border-gray-100 dark:border-gray-850 my-2" />
+					<hr class=" border-gray-100/30 dark:border-gray-850/30 my-2" />
 
 					<div class="mb-2.5 flex flex-col w-full justify-between">
 						<div class="flex w-full justify-between mb-1">
@@ -597,6 +597,20 @@
 									required={false}
 								/>
 							</div>
+							<div class="my-0.5 flex flex-col w-full">
+								<div class=" mb-1 text-xs font-medium">
+									{$i18n.t('Document Intelligence Model')}
+								</div>
+								<div class="flex w-full">
+									<div class="flex-1 mr-2">
+										<input
+											class="flex-1 w-full text-sm bg-transparent outline-hidden"
+											placeholder={$i18n.t('Enter Document Intelligence Model')}
+											bind:value={RAGConfig.DOCUMENT_INTELLIGENCE_MODEL}
+										/>
+									</div>
+								</div>
+							</div>
 						{:else if RAGConfig.CONTENT_EXTRACTION_ENGINE === 'mistral_ocr'}
 							<div class="my-0.5 flex gap-2 pr-2">
 								<input
@@ -656,8 +670,22 @@
 								<SensitiveInput
 									placeholder={$i18n.t('Enter MinerU API Key')}
 									bind:value={RAGConfig.MINERU_API_KEY}
-									required={false}
 								/>
+							</div>
+
+							<div class="flex w-full mt-2">
+								<div class="flex-1 flex justify-between">
+									<div class="self-center text-xs font-medium">
+										{$i18n.t('API Timeout')}
+									</div>
+									<input
+										class="w-16 text-sm bg-transparent outline-hidden text-right"
+										type="number"
+										min="1"
+										bind:value={RAGConfig.MINERU_API_TIMEOUT}
+										placeholder="60"
+									/>
+								</div>
 							</div>
 
 							<!-- Parameters -->
@@ -714,8 +742,23 @@
 								>
 									<option value="">{$i18n.t('Default')} ({$i18n.t('Character')})</option>
 									<option value="token">{$i18n.t('Token')} ({$i18n.t('Tiktoken')})</option>
-									<option value="markdown_header">{$i18n.t('Markdown (Header)')}</option>
 								</select>
+							</div>
+						</div>
+
+						<div class="  mb-2.5 flex w-full justify-between">
+							<div class=" self-center text-xs font-medium">
+								<Tooltip
+									placement="top-start"
+									content={$i18n.t(
+										'Split documents by markdown headers before applying character/token splitting.'
+									)}
+								>
+									{$i18n.t('Markdown Header Text Splitter')}
+								</Tooltip>
+							</div>
+							<div class="flex items-center relative">
+								<Switch bind:state={RAGConfig.ENABLE_MARKDOWN_HEADER_TEXT_SPLITTER} />
 							</div>
 						</div>
 
@@ -755,6 +798,35 @@
 								</div>
 							</div>
 						</div>
+
+						{#if RAGConfig.ENABLE_MARKDOWN_HEADER_TEXT_SPLITTER}
+							<div class="  mb-2.5 flex w-full justify-between">
+								<div class=" flex gap-1.5 w-full">
+									<div class="w-full">
+										<div class="self-center text-xs font-medium min-w-fit mb-1">
+											<Tooltip
+												placement="top-start"
+												content={$i18n.t(
+													'Chunks smaller than this threshold will be merged with neighboring chunks when possible. Set to 0 to disable merging.'
+												)}
+											>
+												{$i18n.t('Chunk Min Size Target')}
+											</Tooltip>
+										</div>
+										<div class="self-center">
+											<input
+												class="w-full rounded-lg py-1.5 px-4 text-sm bg-gray-50 dark:text-gray-300 dark:bg-gray-850 outline-hidden"
+												type="number"
+												placeholder={$i18n.t('Enter Chunk Min Size Target')}
+												bind:value={RAGConfig.CHUNK_MIN_SIZE_TARGET}
+												autocomplete="off"
+												min="0"
+											/>
+										</div>
+									</div>
+								</div>
+							</div>
+						{/if}
 					{/if}
 				</div>
 
@@ -762,7 +834,7 @@
 					<div class="mb-3">
 						<div class=" mt-0.5 mb-2.5 text-base font-medium">{$i18n.t('Embedding')}</div>
 
-						<hr class=" border-gray-100 dark:border-gray-850 my-2" />
+						<hr class=" border-gray-100/30 dark:border-gray-850/30 my-2" />
 
 						<div class="  mb-2.5 flex flex-col w-full justify-between">
 							<div class="flex w-full justify-between">
@@ -914,24 +986,24 @@
 							</div>
 						</div>
 
-						{#if RAG_EMBEDDING_ENGINE === 'ollama' || RAG_EMBEDDING_ENGINE === 'openai' || RAG_EMBEDDING_ENGINE === 'azure_openai'}
-							<div class="  mb-2.5 flex w-full justify-between">
-								<div class=" self-center text-xs font-medium">
-									{$i18n.t('Embedding Batch Size')}
-								</div>
-
-								<div class="">
-									<input
-										bind:value={RAG_EMBEDDING_BATCH_SIZE}
-										type="number"
-										class=" bg-transparent text-center w-14 outline-none"
-										min="-2"
-										max="16000"
-										step="1"
-									/>
-								</div>
+						<div class="  mb-2.5 flex w-full justify-between">
+							<div class=" self-center text-xs font-medium">
+								{$i18n.t('Embedding Batch Size')}
 							</div>
 
+							<div class="">
+								<input
+									bind:value={RAG_EMBEDDING_BATCH_SIZE}
+									type="number"
+									class=" bg-transparent text-center w-14 outline-none"
+									min="-2"
+									max="16000"
+									step="1"
+								/>
+							</div>
+						</div>
+
+						{#if RAG_EMBEDDING_ENGINE === 'ollama' || RAG_EMBEDDING_ENGINE === 'openai' || RAG_EMBEDDING_ENGINE === 'azure_openai'}
 							<div class="  mb-2.5 flex w-full justify-between">
 								<div class="self-center text-xs font-medium">
 									<Tooltip
@@ -953,7 +1025,7 @@
 					<div class="mb-3">
 						<div class=" mt-0.5 mb-2.5 text-base font-medium">{$i18n.t('Retrieval')}</div>
 
-						<hr class=" border-gray-100 dark:border-gray-850 my-2" />
+						<hr class=" border-gray-100/30 dark:border-gray-850/30 my-2" />
 
 						<div class="  mb-2.5 flex w-full justify-between">
 							<div class=" self-center text-xs font-medium">{$i18n.t('Full Context Mode')}</div>
@@ -1211,7 +1283,7 @@
 				<div class="mb-3">
 					<div class=" mt-0.5 mb-2.5 text-base font-medium">{$i18n.t('Files')}</div>
 
-					<hr class=" border-gray-100 dark:border-gray-850 my-2" />
+					<hr class=" border-gray-100/30 dark:border-gray-850/30 my-2" />
 
 					<div class="  mb-2.5 flex w-full justify-between">
 						<div class=" self-center text-xs font-medium">{$i18n.t('Allowed File Extensions')}</div>
@@ -1323,7 +1395,7 @@
 				<div class="mb-3">
 					<div class=" mt-0.5 mb-2.5 text-base font-medium">{$i18n.t('Integration')}</div>
 
-					<hr class=" border-gray-100 dark:border-gray-850 my-2" />
+					<hr class=" border-gray-100/30 dark:border-gray-850/30 my-2" />
 
 					<div class="  mb-2.5 flex w-full justify-between">
 						<div class=" self-center text-xs font-medium">{$i18n.t('Google Drive')}</div>
@@ -1343,7 +1415,7 @@
 				<div class="mb-3">
 					<div class=" mt-0.5 mb-2.5 text-base font-medium">{$i18n.t('Danger Zone')}</div>
 
-					<hr class=" border-gray-100 dark:border-gray-850 my-2" />
+					<hr class=" border-gray-100/30 dark:border-gray-850/30 my-2" />
 
 					<div class="  mb-2.5 flex w-full justify-between">
 						<div class=" self-center text-xs font-medium">{$i18n.t('Reset Upload Directory')}</div>
